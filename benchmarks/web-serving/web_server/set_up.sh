@@ -29,16 +29,26 @@ make install BATCH=yes >& make_log.txt
 
 cat files/limits.conf.append >> /etc/security/limits.conf  
 
+set ELGG_VERSION=2.3.8
+
+fetch https://elgg.org/download/elgg-$ELGG_VERSION.zip \
+    && unzip elgg-$ELGG_VERSION.zip \
+    && mv elgg-$ELGG_VERSION /usr/share/nginx/html/elgg \
+    && chown -R 777 /usr/share/nginx/html/elgg
+
+
 mkdir -p /usr/share/nginx/html/
-cp -r files/elgg_installation /usr/local/share/nginx/html/elgg
+#cp -r files/elgg_installation /usr/local/share/nginx/html/elgg
+
 
 mkdir -p /usr/local/share/nginx/html/elgg/engine/
-cp files/settings.php /usr/local/share/nginx/html/elgg/engine/
+cp files/settings.php /usr/local/share/nginx/html/elgg/elgg-config/settings.php
 
 mkdir /elgg_data
 chmod a+rw /elgg_data
 
 mkdir -p /usr/local/etc/nginx/sites-available/
+cat files/nginx_sites_avail.append >> /etc/nginx/sites-available/default
 
 #put the content of files/nginx_sites_avail.append before "}" in 
 #/usr/local/etc/nginx/nginx.conf
@@ -47,8 +57,9 @@ mkdir -p /usr/local/etc/nginx/sites-available/
 # Append nginx_enable="YES" to /etc/rc.conf
 service nginx restart
 
+mkdir -p /var/run/php
 # Append php_fpm_enable="YES" to /etc/rc.conf
 service php-fpm restart
 
 #modify the path to bash in the first line of bootstrap.sh 
-./bootstrap.sh -d 127.0.0.1 127.0.0.1 80
+./bootstrap_xd.sh -d 127.0.0.1 127.0.0.1 80
