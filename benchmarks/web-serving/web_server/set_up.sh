@@ -45,14 +45,16 @@ mkdir /elgg_data
 chmod a+rw /elgg_data
 
 cp /home/xd10/cloudsuite_new/cloudsuite/benchmarks/web-serving/web_server/nginx.conf /usr/local/etc/nginx/nginx.conf
-# I have modified two places in the original nginx.conf
-#(1)change the path in files/nginx_sites_avail.append to be "root /usr/local/share/nginx/html/elgg;" 
-#instead of "root /usr/share/nginx/html/elgg;"
-#(2)append the conent of files/nginx_sites_avail.append to /usr/local/etc/nginx/nginx.conf 
-#before the very last "}"
+# I have modified one place in the original nginx.conf
+# see line 121 to 156 in /home/xd10/cloudsuite_new/cloudsuite/benchmarks/web-serving/web_server/nginx.conf, which is the new content appended to the original nginx.conf
 
-
-
+cp  /home/xd10/cloudsuite_new/cloudsuite/benchmarks/web-serving/web_server/www.conf /usr/local/etc/php-fpm.d/www.conf
+# I have modified two places in the original www.conf
+# (1) change "listen = 127.0.0.1:9000" to "listen = /var/run/php72-fpm.sock"
+# (2) Uncomment the following line:
+#	listen.owner = www
+#	listen.group = www
+#	listen.mode = 0660
 
 # Append nginx_enable="YES" to /etc/rc.conf
 service nginx restart
